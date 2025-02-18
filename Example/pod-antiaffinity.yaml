@@ -1,28 +1,28 @@
-# pod-antiaffinity.yaml
+# 4. Pod AntiAffinity: 동일한 애플리케이션의 파드가 서로 다른 노드에 배치되도록 설정
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pod-antiaffinity
+  name: pod-anti-affinity-example
 spec:
+  replicas: 5
   selector:
     matchLabels:
-      app: antiaffinity
-  replicas: 2
+      app: myapp
   template:
     metadata:
       labels:
-        app: antiaffinity
+        app: myapp
     spec:
-      containers:
-      - name: nginx
-        image: nginx
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app
-                operator: In
-                values:
-                - antiaffinity
-            topologyKey: "kubernetes.io/hostname"
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - myapp
+              topologyKey: "kubernetes.io/hostname"
+      containers:
+        - name: my-container
+          image: nginx

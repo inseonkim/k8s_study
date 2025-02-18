@@ -1,28 +1,29 @@
-# pod-affinity.yaml
+# 3. Pod Affinity: 특정 파드가 동일한 노드에 배치되도록 설정
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pod-affinity
+  name: pod-affinity-example
 spec:
+  replicas: 10
   selector:
     matchLabels:
-      app: affinity
-  replicas: 2
+      app: myapp
   template:
     metadata:
       labels:
-        app: affinity
+        app: myapp
     spec:
-      containers:
-      - name: nginx
-        image: nginx
       affinity:
         podAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-          - labelSelector:
-              matchExpressions:
-              - key: app
-                operator: In
-                values:
-                - affinity
-            topologyKey: "kubernetes.io/hostname"
+          requiredDuringSchedulingIgnoredDuringExecution: 
+            - labelSelector:
+                matchExpressions: #app=myapp
+                  - key: app
+                    operator: In
+                    values:
+                      - myapp
+              topologyKey: "kubernetes.io/hostname" # kubernetes.io/hostname > 같은 호스트 = 같은 노드에 스케줄링 되도록함
+      containers:
+        - name: my-container
+          image: nginx
+

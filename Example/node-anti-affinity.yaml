@@ -1,10 +1,10 @@
-# 1. Node Affinity: 특정 노드(Label이 있는 노드)에만 배포
+# 2. Node AntiAffinity: 특정 노드(Label이 있는 노드)를 피해서 배포
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: node-affinity-example
+  name: node-anti-affinity-example
 spec:
-  replicas: 10 # 스케줄링 확인을 위해 replicas를 10으로 설정
+  replicas: 2
   selector:
     matchLabels:
       app: myapp
@@ -18,10 +18,10 @@ spec:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
               - matchExpressions:
-                  - key: disktype # disktype 라벨의 값이 hdd인 노드에만 배포
-                    operator: In
+                  - key: disktype
+                    operator: NotIn
                     values:
-                      - hdd
+                      - ssd
       containers:
         - name: my-container
           image: nginx
